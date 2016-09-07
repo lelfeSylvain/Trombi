@@ -2,6 +2,7 @@
 /* importer un fichier CSV d'élèves */
 ?>
 Importer</div>
+    <?php include('vues/v_ariane.php');?>
 <script>
     function updateSize() {
         var nBytes = 0,
@@ -26,6 +27,7 @@ $etape = substr($num, -1);
 $typeUpload = substr($num, 0, -1);
 if ('0' === $etape) { //affichage du formulaire 
     ?>
+<p>Importer un fichier CSV au format nom;prenom;classe</p>
     <form method="POST" action="index.php?uc=import&num=<?php echo $typeUpload . "1"; ?>" enctype="multipart/form-data">	
         <p>
             Année : <input id="annee" type="number" name="annee" value ='<?php echo getYear(); ?>'>

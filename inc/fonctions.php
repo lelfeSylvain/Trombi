@@ -107,7 +107,7 @@ function importerUnFichierImage($fileName, $idFichier, $dossier, $numDest, $dest
     $ilyaerreur = false;
     /* script upload d'après http://antoine-herault.developpez.com/tutoriels/php/upload/ */
     $fichier = basename($fileName);
-    $extension = strrchr($fileName, '.');
+    $extension = strtolower(strrchr($fileName, '.'));
     $extensions = ['.png', '.gif', '.jpg', '.jpeg']; // création de tableaux nouvelle syntaxe
     $erreur = "Vous devez uploader un fichier de type png, gif, jpg ou jpeg";
     //Début des vérifications de sécurité...

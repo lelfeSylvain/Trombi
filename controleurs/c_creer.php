@@ -1,5 +1,5 @@
 <?php
-
+// importation des valeurs POST
 $options = array(
     'default' => null, // valeur à retourner si le filtre échoue
     // autres options ici...
@@ -8,7 +8,9 @@ $options = array(
 );
 
 $nomNewItem = filter_input(INPUT_POST, 'nom', FILTER_SANITIZE_STRING);
-if (0 === $_SESSION['etape']) {// gstion de l'affichage du formulaire
+
+// début du traitement
+if (0 === $_SESSION['etape']) {// gestion de l'affichage du formulaire
     $_SESSION['nc'] = filter_input(INPUT_GET, 'nc', FILTER_VALIDATE_INT, $options);
     
     $lesClasseurs = $pdo->getLesTrombis($_SESSION['numUtil']);
@@ -36,6 +38,7 @@ if (0 === $_SESSION['etape']) {// gstion de l'affichage du formulaire
         $_SESSION['nomclasseur'] = $pdo->getNomClasseur($_SESSION['nc']);
     }
     $lesClasseurs = $pdo->getLesTrombis($_SESSION['numUtil']);
+    $_SESSION['etape'] = 0;
     include('vues/v_listClasseur.php');
 } else include('vues/v_erreur.php');
 

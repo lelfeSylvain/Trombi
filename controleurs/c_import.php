@@ -1,9 +1,8 @@
 <?php
 
-function importerUnFichierCSV($fileName, $idFichier) {
-    global $DOSSIERUPLOAD;
+function importerUnFichierCSV($fileName, $idFichier,$dossier,$d) {
     $ilyaerreur = false;
-    $dossier = $DOSSIERUPLOAD . dec2hex($_SESSION['nc']) . "/csv";
+    
     /* script upload d'après http://antoine-herault.developpez.com/tutoriels/php/upload/ */
     $fichier = basename($fileName);
     $extension = strrchr($fileName, '.');
@@ -21,7 +20,7 @@ function importerUnFichierCSV($fileName, $idFichier) {
         $erreur = $rep;
         $ilyaerreur = true;
     }
-    $d = date("Ymd") . ".txt";
+    
     if (!$ilyaerreur) { //S'il n'y a pas d'erreur, on uploade
         if (move_uploaded_file($idFichier, $dossier . "/" . $d)) { //Si la fonction renvoie TRUE, c'est que ça a fonctionné...
             $message = "Fichier : " . $fichier . " : Upload effectué avec succès ! Nouveau nom : " . $dossier . "/" . $d;
@@ -39,11 +38,14 @@ function importerUnFichierCSV($fileName, $idFichier) {
 $tailleMaxi = 100000; // On limite le fichier à 100Ko 
 $message = "";
 $dest = "csv";
-$estEnISO8859 = true; // TODO vérifier que le fichier est en iso8859
+$delimiteurCSV=';'; // TODO demander à l'utilisateur quel délimiteur est utilisé 
+$estEnISO8859 = false; // TODO vérifier que le fichier est en iso8859
 
 if ('1' === $num) {
     // pas d'enregistrement dans la BD donc dernier paramètre à false
-    $message = importerUnFichierCSV($_FILES['mesFichiers']['name'], $_FILES['mesFichiers']['tmp_name']);
+    $dossier = $DOSSIERUPLOAD . dec2hex($_SESSION['nc']) . "/csv";
+    $nomCSV = date("Ymd") . ".txt";
+    $message = importerUnFichierCSV($_FILES['mesFichiers']['name'], $_FILES['mesFichiers']['tmp_name'],$dossier,$nomCSV);
     $options = array(
         'default' => getYear(), // valeur à retourner si le filtre échoue
         // autres options ici...
@@ -54,12 +56,15 @@ if ('1' === $num) {
     $message .= EOL . "année : " . $annee . EOL;
     /* lecture du fichier csv */
     $nbligne = 0;
-    $handle = @fopen("upload/txt/csv.txt", "r");
+    $handle = @fopen($dossier.'/'.$nomCSV, "r");
     if ($handle) {
-        while (($buffer = fgets($handle, 4096)) !== false) {
-            //$message .=  iso2utf8 ($buffer, $estEnISO8859).EOL;
-            list($nomEle, $prenomEle, $classeEle) = explode(',', iso2utf8($buffer, $estEnISO8859));
-            $numClasse = $pdo->setClasseIfNotExist($classeEle, $annee);
+        while (($buffer = fgetCSV($handle, 4096,$delimiteurCSV)) !== false) {
+            $nomEle=iso2utf8($buffer[0], $estEnISO8859);
+            $prenomEle=iso2utf8($buffer[1], $estEnISO8859);
+            $classeEle=iso2utf8($buffer[2], $estEnISO8859);
+            //list($nomEle, $prenomEle, $classeEle) = explode($delimiteurCSV, iso2utf8($buffer, $estEnISO8859));
+            $message .=  $nomEle.' '.$prenomEle.' '. $classeEle.EOL;
+            $numClasse = $pdo->setClasseIfNotExist($classeEle, $_SESSION['nt']);
             $numEleve = $pdo->setEleveIfNotExist($nomEle, $prenomEle, $numClasse);
             $nbligne++;
         }

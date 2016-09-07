@@ -161,9 +161,9 @@ class PDF extends FPDF {
             }
             $this->setImage($x, $y, $this->path . $unEleve['path'] . "/" . dec2hex($unEleve['numfichier']) . ".jpg");
 
-            $this->affiche($x, $y + $this->hauteurPhoto, $unEleve['prenom']);
+            $this->affiche($x, $y + $this->hauteurPhoto, ucwords($unEleve['prenom']));
             //$this->affiche($x, $y + 30, $this->largeurPhoto*$this->ratio($this->path . $unEleve['path'] . "/" . dec2hex($unEleve['numfichier']) . ".jpg"));
-            $this->affiche($x, $y + $this->hauteurPhoto + $this->hauteurEtiquette, $unEleve['nomeleve'], true);
+            $this->affiche($x, $y + $this->hauteurPhoto + $this->hauteurEtiquette, strtoupper($unEleve['nomeleve']), true);
             $this->nbPhotoPage++;
 
             $x+=$this->largeurPhoto + $this->margeHEntrePhotos;
@@ -192,7 +192,7 @@ class PDF extends FPDF {
         if ($estCentreDansLaPage) { // s'il doit être centré dans la page, inutile de redimensionner la police
             $x = $this->margeGauche;
             $l = 0;
-        } else {// on redimenssionne si cela ne tient pas dans la largeur de l'étiquette
+        } else {// on redimensionne si cela ne tient pas dans la largeur de l'étiquette
             $l = $this->largeurPhoto;
             $t = $taille - 1;
             while ($this->GetStringWidth($tex) > $this->largeurPhoto and $this->GetStringWidth($tex) > 7) {
@@ -250,7 +250,7 @@ if (!Session::isLogged()) {
     $pdo = PDOTrombi::getPdoTrombi($PATH);
     $DOSSIERUPLOAD = 'upload/';
 // paramètre du trombi 
-    $nbcol = 5;
+    $nbcol = 6;
     $nblig = 6;
     $orientation = 'P'; //'P' ou 'L'
 

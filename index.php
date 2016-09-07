@@ -55,10 +55,10 @@ elseif (!Session::isLogged()) {
                 include("controleurs/c_genererpdf.php");
                 break;
             }
-        /* case 'ecrire': {// uc création d'un repas
-          include("controleurs/c_creation.php");
+        case 'action': {// uc gestion des images du trombi
+          include("controleurs/c_action.php");
           break;
-          } */
+          } 
          case 'creerUtil': {// créer un nouvel utilisateur (seulement SUser)
              include("controleurs/c_creerutil.php");
              break;
