@@ -702,11 +702,11 @@ class PDOTrombi {
      * @return int
      */
     public function getNbElevesParClasseMax($numt) {
-        $sql= "SELECT count(*) as nb FROM " . PdoTrombi::$prefixe . "eleve e join " . PdoTrombi::$prefixe . "classe c on numclasse=c.num where c.numtrombi= 8 group by numclasse having COUNT(*) >= all (select count(*) FROM " . PdoTrombi::$prefixe . "eleve join " . PdoTrombi::$prefixe . "classe on numclasse = " . PdoTrombi::$prefixe . "classe.num where " . PdoTrombi::$prefixe . "classe.numtrombi= 8 group by numclasse )";
+        $sql= "SELECT count(*) as nb FROM " . PdoTrombi::$prefixe . "eleve e join " . PdoTrombi::$prefixe . "classe c on numclasse=c.num where c.numtrombi= ? group by numclasse having COUNT(*) >= all (select count(*) FROM " . PdoTrombi::$prefixe . "eleve join " . PdoTrombi::$prefixe . "classe on numclasse = " . PdoTrombi::$prefixe . "classe.num where " . PdoTrombi::$prefixe . "classe.numtrombi= ? group by numclasse )";
         
         $this->logSQL($sql . " " . $numt);
         $sth = PdoTrombi::$monPdo->prepare($sql);
-        $sth->execute(array($numt));
+        $sth->execute(array($numt,$numt));
         $result = $sth->fetch();
         $this->logSQL( "==> " . $result['nb']);
         return $result['nb'];
@@ -717,7 +717,7 @@ class PDOTrombi {
      * @return array
      */
     public function getNbElevesParClasse($numt) {
-        $sql= "SELECT count(*) as nb FROM " . PdoTrombi::$prefixe . "eleve e join " . PdoTrombi::$prefixe . "classe c on numclasse=c.num where c.numtrombi= 8 group by numclasse order by c.nom";
+        $sql= "SELECT count(*) as nb FROM " . PdoTrombi::$prefixe . "eleve e join " . PdoTrombi::$prefixe . "classe c on numclasse=c.num where c.numtrombi= ? group by numclasse order by c.nom";
         
         $this->logSQL($sql . " " . $numt);
         $sth = PdoTrombi::$monPdo->prepare($sql);
