@@ -26,10 +26,10 @@ class PDF extends FPDF {
     private $mesParametres;
     private $logo;
 
-    public function __construct($t, $l, $p, $o, $nbc, $nbl,$logo) {
+    public function __construct($t, $l, $p, $o, $nbc, $nbl, $logo) {
         parent::__construct($o, "mm", "A4");
-        
-        $this->logo=$logo;
+
+        $this->logo = $logo;
         $this->titre = $t;
         $this->lesEleves = $l;
         $this->path = $p;
@@ -46,6 +46,7 @@ class PDF extends FPDF {
 
         $this->hauteurTitre = 34;
         $this->SetTitle($t);
+        $this->SetSubject($t);
         $this->SetAutoPageBreak(false);
 
         // on calcule la largeur idéale d'une photo en prenant la largeur
@@ -65,11 +66,11 @@ class PDF extends FPDF {
         } else {
             $this->hauteurPhoto = $this->hauteurMoy;
         }
-        $this->mesParametres = new Parametres($t,$nbc, $nbl,$o,$p,$logo,10,10,15,34,4,4,8,$this->largeurMin,$this->largeurMax,
-                $this->largeurMoy,$this->hauteurMin, $this->hauteurMax, $this->hauteurMoy);
+        $this->mesParametres = new Parametres($t, $nbc, $nbl, $o, $p, $logo, 10, 10, 15, 34, 4, 4, 8, $this->largeurMin, $this->largeurMax, $this->largeurMoy, $this->hauteurMin, $this->hauteurMax, $this->hauteurMoy);
     }
+
     function getParametres() {
-        $p= [ $this->mesParametres->getTitre(),
+        $p = [ $this->mesParametres->getTitre(),
             $this->mesParametres->getOrientation(),
             $this->mesParametres->getPath(),
             $this->mesParametres->getLogo(),
@@ -88,11 +89,11 @@ class PDF extends FPDF {
             $this->mesParametres->getHauteurMin(),
             $this->mesParametres->getHauteurMax(),
             $this->mesParametres->getHauteurMoy()
-            ];
+        ];
         return $p;
     }
 
-        function calculerStatPhotos() {
+    function calculerStatPhotos() {
         $hmax = -1;
         $vmax = -1;
         $hmin = $this->GetPageHeight();
@@ -250,17 +251,34 @@ if (!Session::isLogged()) {
     $pdo = PDOTrombi::getPdoTrombi($PATH);
     $DOSSIERUPLOAD = 'upload/';
 // paramètre du trombi 
-    $nbcol = 6;
-    $nblig = 6;
-    $orientation = 'P'; //'P' ou 'L'
+    $nbEleves = $pdo->getNbElevesParClasseMax($_SESSION['nt']); // TODO à enlever lorsque le paramétrage sera actif
+    $orientation = strtoupper($_GET["sens"]); //'P' ou 'L'
+    if ('P' === $orientation) {//portrait
+        $nbcol = 6;
+        if ($nbEleves > 30)
+            $nblig = 6;
+        else
+            $nblig = 5;
+    } else {//paysage
+        $orientation = 'L';
+        if ($nbEleves > 32) {
+            $nbcol = 9;
+            $nblig = 4;
+        } else {
+            $nbcol = 8;
+            $nblig = 4;
+        }
+    }
+
 
     $lesEleves = $pdo->getLesEleves($_SESSION['nt']);
-    $pdf = new PDF('Trombinoscope ' . utf8_decode($pdo->getNomTrombi($_SESSION['nt'])), $lesEleves, $PATH . $DOSSIERUPLOAD, $orientation, $nbcol, $nblig,'../images/logo.png');
+    $pdf = new PDF('Trombinoscope ' . utf8_decode($pdo->getNomTrombi($_SESSION['nt'])), $lesEleves, $PATH . $DOSSIERUPLOAD, $orientation, $nbcol, $nblig, '../images/logo.png');
 // gère l'alias pour le nb page
     $pdf->AliasNbPages();
     $pdf->ComposerTrombinoscope();
+
     $pdf->Output();
-    $pdo->setParametres($_SESSION['nt'],$pdf->getParametres());
+    $pdo->setParametres($_SESSION['nt'], $pdf->getParametres());
 }
 
 /** converti un entier en hexa sur 8 chiffres

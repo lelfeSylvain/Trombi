@@ -1,4 +1,4 @@
-Upload</div>
+Upload</div></header>
 <script>
     function updateSize() {
         var nBytes = 0,
@@ -32,6 +32,7 @@ if ('0' === $etape) { //affichage du formulaire
             <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $tailleMaxi; ?>">
             <?php if ("Mono" === $typeUpload) { ?> 
                 Fichier : <input id="uploadInput" type="file" name="mesFichiers" onchange="updateSize();">
+                Eleve : <input name="numeleve" type="text" value="<?php echo $numEleve; ?>" >
             <?php } else { ?>
                 <input id="uploadInput" type="file" name="mesFichiers[]" onchange="updateSize();" multiple> 
             <?php } ?>

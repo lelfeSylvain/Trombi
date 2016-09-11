@@ -16,7 +16,10 @@ $tabMois = array("janvier", "février", "mars", "avril", "mai", "juin", "juillet
 $_SESSION['debug'] = "hidden";
 // dossier des uploads
 $DOSSIERUPLOAD = 'upload/';
-
+// augmenter le nombre de fichiers télécharger max
+ini_set('max_file_uploads',300); // 300 à optimiser si besoin
+//
+//
 // TODO effacer le mode debug
 //$_SESSION['debug']="text";
 // instanciation de la fabrique de vue

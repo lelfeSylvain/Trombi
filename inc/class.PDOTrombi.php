@@ -303,6 +303,32 @@ class PDOTrombi {
         return $retour;
     }
 
+    /** récupère tous les informations d'un fichier
+     * 
+     * 
+     */
+    public function getFichier($numfile) {
+        $sql = "SELECT f.num as numfichier, f.nom as nomfichier, r.nom as nomrepertoire, suffixe FROM " . PdoTrombi::$prefixe . "fichier f join " . PdoTrombi::$prefixe . "repertoire r on f.numrepertoire = r.num where f.num= ? ";
+        $this->logSQL($sql . " " . $numfile);
+        $sth = PdoTrombi::$monPdo->prepare($sql);
+        $sth->execute(array($numfile));
+        $result = $sth->fetch();
+        $this->logSQL($result['numfichier'] . ', ' . $result['nomfichier'] . ', ' . $result['nomrepertoire']);
+        return $result;
+    }
+
+    /** efface de la BD le fichier $numfile
+     * 
+     * @param int $numfile
+     * @return type
+     */
+    public function deleteFichier($numfile) {
+        $sql = "DELETE " . PdoTrombi::$prefixe . "fichier where num=?";
+        $this->logSQL($sql . " " . $numfile);
+        $sth = PdoTrombi::$monPdo->prepare($sql);
+        $sth->execute(array($numfile));
+    }
+
     /**
      * ajoute une classe dans la BD
      * @param type $classe
@@ -389,6 +415,15 @@ class PDOTrombi {
             $this->logSQL($code);
         }
         return $code;
+    }
+
+    public function getMaxNumEleve() {
+        $sql = "SELECT max(num) as nummax FROM " . PdoTrombi::$prefixe . "eleve  ";
+        $this->logSQL($sql);
+        $sth = PdoTrombi::$monPdo->prepare($sql);
+        $sth->execute(array());
+        $result = $sth->fetch();
+        return $result['nummax'];
     }
 
     /**
@@ -566,12 +601,39 @@ class PDOTrombi {
         return $result['numrepertoire'];
     }
 
+    /** renvoie la fiche de l' eleve dont le n° est passé en paramètre
+     * @param int $nume
+     * @return tableau associatif décrivant un élève
+     */
+    public function getEleve($nume) {
+        $sql = "SELECT * FROM " . PdoTrombi::$prefixe . "eleve where num=? ";
+        $this->logSQL($sql . " " . $nume);
+        $sth = PdoTrombi::$monPdo->prepare($sql);
+        $sth->execute(array($nume));
+        $result = $sth->fetch();
+        return $result;
+    }
+
+    public function libererImageEleve($nume) {
+        $sql = "UPDATE " . PdoTrombi::$prefixe . "eleve set numfichier= 0 WHERE num = ?";
+        $this->logSQL($sql . " " . $nume);
+        $sth = PdoTrombi::$monPdo->prepare($sql);
+        $sth->execute(array($nume));
+    }
+
+    public function libererFichier($numfile) {
+        $sql = "UPDATE " . PdoTrombi::$prefixe . "fichier set numeleve= 0 WHERE num = ?";
+        $this->logSQL($sql . " " . $numfile);
+        $sth = PdoTrombi::$monPdo->prepare($sql);
+        $sth->execute(array($numfile));
+    }
+
     /** renvoie le numéro identifiant du premier eleve du trombinoscope
      *  qui n'a pas de fichier associé
      * @param int $numt
      * @return int
      */
-    public function getNumPremierEleve($numt) {
+    public function getNumPremierEleveSansPhoto($numt) {
         $sql = "SELECT min(e.num) as n FROM " . PdoTrombi::$prefixe . "eleve e join " . PdoTrombi::$prefixe . "classe c on e.numclasse = c.num  where numtrombi=? and numfichier=0";
         $this->logSQL($sql . " " . $numt);
         $sth = PdoTrombi::$monPdo->prepare($sql);
@@ -579,6 +641,21 @@ class PDOTrombi {
         $result = $sth->fetch();
         return $result['n'];
     }
+
+    /** renvoie les numéro identifiant des eleves du trombinoscope
+     *  qui n'a pas de fichier associé
+     * @param int $numt
+     * @return tableau 
+     */
+    public function getLesNumEleveSansPhoto($numt) {
+        $sql = "SELECT e.num as n FROM " . PdoTrombi::$prefixe . "eleve e join " . PdoTrombi::$prefixe . "classe c on e.numclasse = c.num  where numtrombi=? and numfichier=0 order by c.nom, e.nom, e.prenom";
+        $this->logSQL($sql . " " . $numt);
+        $sth = PdoTrombi::$monPdo->prepare($sql);
+        $sth->execute(array($numt));
+        $result = $sth->fetchAll();
+        return $result;
+    }
+
     /** renvoie le numéro identifiant du premier eleve du trombinoscope
      *  qui n'a pas de fichier associé
      * @param int $numt
@@ -592,6 +669,7 @@ class PDOTrombi {
         $result = $sth->fetch();
         return $result['n'];
     }
+
     /** ajoute le numéro de fichier à l'élève
      * 
      * @param int $numEleve
@@ -610,14 +688,43 @@ class PDOTrombi {
      * @return table résultat
      */
     public function getLesEleves($numt) {
-        $sql = "SELECT c.num as numclasse,  e.nom as nomeleve, f.num as numfichier, r.nom as path, c.nom as nomclasse, prenom, e.num as numeleve FROM " . PdoTrombi::$prefixe . "eleve e left join " . PdoTrombi::$prefixe . "fichier f on numfichier=f.num left join " . PdoTrombi::$prefixe . "repertoire r on f.numrepertoire=r.num join " . PdoTrombi::$prefixe . "classe c on e.numclasse=c.num where c.numtrombi= ? order by c.nom,2,6";;
+        $sql = "SELECT c.num as numclasse,  e.nom as nomeleve, f.num as numfichier, r.nom as path, c.nom as nomclasse, prenom, e.num as numeleve FROM " . PdoTrombi::$prefixe . "eleve e left join " . PdoTrombi::$prefixe . "fichier f on numfichier=f.num left join " . PdoTrombi::$prefixe . "repertoire r on f.numrepertoire=r.num join " . PdoTrombi::$prefixe . "classe c on e.numclasse=c.num where c.numtrombi= ? order by c.nom,2,6";
+        ;
         $this->logSQL($sql . " " . $numt);
         $sth = PdoTrombi::$monPdo->prepare($sql);
         $sth->execute(array($numt));
         $result = $sth->fetchAll();
         return $result;
     }
-
+    /** retourne le nombre d'élèves maxi par classe d'un trombi
+     * 
+     * @param int $numt
+     * @return int
+     */
+    public function getNbElevesParClasseMax($numt) {
+        $sql= "SELECT count(*) as nb FROM " . PdoTrombi::$prefixe . "eleve e join " . PdoTrombi::$prefixe . "classe c on numclasse=c.num where c.numtrombi= 8 group by numclasse having COUNT(*) >= all (select count(*) FROM " . PdoTrombi::$prefixe . "eleve join " . PdoTrombi::$prefixe . "classe on numclasse = " . PdoTrombi::$prefixe . "classe.num where " . PdoTrombi::$prefixe . "classe.numtrombi= 8 group by numclasse )";
+        
+        $this->logSQL($sql . " " . $numt);
+        $sth = PdoTrombi::$monPdo->prepare($sql);
+        $sth->execute(array($numt));
+        $result = $sth->fetch();
+        $this->logSQL( "==> " . $result['nb']);
+        return $result['nb'];
+    }
+    /** retourne le nombre d'élèves  pour chaque classe d'un trombi
+     * 
+     * @param int $numt
+     * @return array
+     */
+    public function getNbElevesParClasse($numt) {
+        $sql= "SELECT count(*) as nb FROM " . PdoTrombi::$prefixe . "eleve e join " . PdoTrombi::$prefixe . "classe c on numclasse=c.num where c.numtrombi= 8 group by numclasse order by c.nom";
+        
+        $this->logSQL($sql . " " . $numt);
+        $sth = PdoTrombi::$monPdo->prepare($sql);
+        $sth->execute(array($numt));
+        $result = $sth->fetchAll();
+        return $result;
+    }
     public function setParametres($nt, $p) {
         $this->logSQL("avant la requete");
         $sql = "INSERT INTO " . PdoTrombi::$prefixe . "parametres (numtrombi, titre, orientation, cheminphoto, logo, nbcol, nblig, margeDroite,
@@ -626,8 +733,8 @@ class PDOTrombi {
         $s = $sql . " (" . $nt;
         for ($i = 0; $i < 20; $i++) {
             $s.=", " . $p[$i];
-        } 
-        $this->logSQL($s.")");
+        }
+        $this->logSQL($s . ")");
         $sth = PdoTrombi::$monPdo->prepare($sql);
         array_unshift($p, $nt);
         $this->logSQL("après unsift");
@@ -636,7 +743,7 @@ class PDOTrombi {
             $retour = PdoTrombi::$monPdo->lastInsertId();
         } else {
             $retour = false;
-        }$this->logSQL("après encore ".$retour);
+        }$this->logSQL("après encore " . $retour);
         return $retour;
     }
 
