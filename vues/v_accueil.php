@@ -5,7 +5,7 @@ Choix du classeur</div>
 <?php if ("inconnu" != $_SESSION['nt']) { ?>
 
 
-    <p><a href='index.php?uc=upload&num=Mono0'>Charger une image</a></p>
+    <p><a href='index.php?uc=action&num=exporter'>Exporter le Trombi en photos</a></p>
     <p><a href='index.php?uc=upload&num=Multi0&id=<?php echo $numEleve; ?>'>Charger plusieurs images</a></p>
     <p><a href='index.php?uc=import&num=0'>Importer élèves</a></p>
     <p><a href='index.php?uc=afficher&num=0'>voir trombi</a></p>

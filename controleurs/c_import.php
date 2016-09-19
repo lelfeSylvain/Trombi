@@ -58,6 +58,18 @@ if ('1' === $num) {
     $nbligne = 0;
     $handle = @fopen($dossier.'/'.$nomCSV, "r");
     if ($handle) {
+        // entêtes de colonne
+    
+        if (($buffer = fgetCSV($handle, 4096,$delimiteurCSV)) !== false) {
+            $nbCol=count($buffer);
+            if ($nbCol>3) {// attention le tableau $colonneSup commence à 3 d'indice
+                for($i=3;$i<$nbCol;$i++){                    
+                    $colonneSup[$i]=$pdo->addPropriete($_SESSION['nt'],$buffer[$i]);
+                    $message .='Ajout de la proprieté : '.$buffer[$i].EOL;
+                }
+            }
+        }
+        // autres lignes
         while (($buffer = fgetCSV($handle, 4096,$delimiteurCSV)) !== false) {
             $nomEle=iso2utf8($buffer[0], $estEnISO8859);
             $prenomEle=iso2utf8($buffer[1], $estEnISO8859);
@@ -66,6 +78,9 @@ if ('1' === $num) {
             $message .=  $nomEle.' '.$prenomEle.' '. $classeEle.EOL;
             $numClasse = $pdo->setClasseIfNotExist($classeEle, $_SESSION['nt']);
             $numEleve = $pdo->setEleveIfNotExist($nomEle, $prenomEle, $numClasse);
+            for($i=3;$i<$nbCol;$i++){
+                $pdo->setValeurPropriete($numEleve,$colonneSup[$i],$buffer[$i]);
+            }
             $nbligne++;
         }
         if (!feof($handle)) {
