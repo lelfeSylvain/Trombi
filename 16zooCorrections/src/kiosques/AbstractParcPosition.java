@@ -26,7 +26,7 @@ public class AbstractParcPosition implements IParcPosition {
 
     public void setMaPos(int i) {
         if (i <= DERNIEREPOSITION) {
-            if (i > 0) {
+            if (i >= PREMIEREPOSITION) {
                 maPos = i;
             } else {
                 maPos = PREMIEREPOSITION;
