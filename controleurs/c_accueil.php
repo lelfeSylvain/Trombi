@@ -16,5 +16,4 @@ if ("choix" === substr($num, 0, 5)) {
 
 $lesClasseurs = $pdo->getLesTrombis($_SESSION['numUtil']);
 $_SESSION['etape'] = 0;
-include('vues/v_accueil.php');
 

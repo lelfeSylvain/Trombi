@@ -41,13 +41,11 @@ body>section{
     background-color : #333;
     color: chocolate; 
     font-family:  "Arial", "Trebuchet MS";
-    /* a tester si c'est utile
-    min-height: 800px;
-    min-width: 800px;*/
     display : flex;
     flex-direction : column;
     justify-content: space-between;
     margin : auto;
+    min-height: 100vh;    
 }
 
 /* tous les header on des majuscules et de l'espacement */

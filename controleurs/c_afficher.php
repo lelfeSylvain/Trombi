@@ -1,4 +1,4 @@
 <?php
 
-$lesEleves = $pdo->getLesEleves($_SESSION['nt']);
+$lesEleves = $pdo->getLesElevesOption($_SESSION['nt']);
 include 'vues/v_trombi.php';

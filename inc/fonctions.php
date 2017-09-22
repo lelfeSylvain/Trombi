@@ -1,9 +1,9 @@
 <?php
 
 // initialisations du projet
-require_once $PATH.'inc/class.Session.php';
+require_once $PATH . 'inc/class.Session.php';
 Session::init();
-require_once $PATH.'inc/class.PDOTrombi.php';
+require_once $PATH . 'inc/class.PDOTrombi.php';
 $_GLOBAL['titre'] = "Trombi";
 include 'vues/v_entete.php';
 // constantes 
@@ -17,7 +17,7 @@ $_SESSION['debug'] = "hidden";
 // dossier des uploads
 $DOSSIERUPLOAD = 'upload/';
 // augmenter le nombre de fichiers télécharger max
-ini_set('max_file_uploads',300); // 300 à optimiser si besoin
+ini_set('max_file_uploads', 300); // 300 à optimiser si besoin
 //
 //
 // TODO effacer le mode debug
@@ -127,10 +127,10 @@ function importerUnFichierImage($fileName, $idFichier, $dossier, $numDest, $dest
         $ilyaerreur = true;
     }
     if (!$ilyaerreur) { //S'il n'y a pas d'erreur, on enregistre le fichier dans la BD 
-            $fichier = formaterNomFichier($fichier);
-            //on enregistre le fichier dans la BD
-            $numFich = $pdo->setFichier($fichier, $extension, $numDest, $numEleve, $nt, $nc);
-            if (false === $numFich) {//erreur lors de l'accès à la BD
+        $fichier = formaterNomFichier($fichier);
+        //on enregistre le fichier dans la BD
+        $numFich = $pdo->setFichier($fichier, $extension, $numDest, $numEleve, $nt, $nc);
+        if (false === $numFich) {//erreur lors de l'accès à la BD
             $erreur = "Impossible d'enregistrer le fichier dans la BD";
             $ilyaerreur = true;
         } else {
@@ -139,7 +139,7 @@ function importerUnFichierImage($fileName, $idFichier, $dossier, $numDest, $dest
     }
     if (!$ilyaerreur) { //S'il n'y a toujours pas d'erreur, on uploade
         if (move_uploaded_file($idFichier, $dossier . $dest . "/" . $numFich . $extension)) { //Si la fonction renvoie TRUE, c'est que ça a fonctionné...
-            $message = $numFich." Fichier : " . $fichier . " : Upload effectué avec succès ! Nouveau nom : " . $dossier . $dest . "/" . $numFich . $extension;
+            $message = $numFich . " Fichier : " . $fichier . " : Upload effectué avec succès ! Nouveau nom : " . $dossier . $dest . "/" . $numFich . $extension;
         } else { //Sinon (la fonction renvoie FALSE).
             $message = "00000000 - Fichier : " . $fichier . " : Echec de l'upload !";
         }
@@ -182,4 +182,24 @@ function dec2hex($n) {
 
 function zeropad($num, $lim) {
     return (strlen($num) >= $lim) ? $num : zeropad("0" . $num, $lim);
+}
+
+function couperNom($nom) {
+    $l = 14;
+    $retour[0] = $nom;
+    if (strlen($nom) > $l) {
+        $pieces = explode(" ", $nom);
+        $nb = count($pieces);
+        $retour[0] = $pieces[0];
+        $j = 0;
+        for ($i = 1; $i < $nb; $i++) {
+            if (strlen($retour[$j] . " " . $pieces[$i]) > $l) {
+                $j++;
+                 $retour[$j] = $pieces[$i];
+            } else {
+                $retour[$j] .= " " . $pieces[$i];
+            }
+        }
+    }
+    return implode("<br/> ", $retour);
 }

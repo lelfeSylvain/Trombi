@@ -16,94 +16,9 @@ cette ligne est répétée 5 fois */
 } 
 /* une ligne est composée de :  un jour smallscreen, unecase, un jour et unecase */
 
-.unecase {   
-    display : flex;
-    flex-direction: row;
-    justify-content: space-between;
-    margin: auto;
-    border-radius:5px;
-    height: 120px;
-    background-color: grey;
-    color:black;
-    overflow:  auto;
-}
-
-/* affiche la date du jour*/ 
-.jour{
-    width: 150px;
-    flex-direction: column;
-}
-
-.jour.smallscreen {
-    display :  none;
-}
-/* les types des cases menus*/
-.midi.tantot {
-    background-color: lightgoldenrodyellow; 
-    width: 40%;
-    color: chocolate; 
-    background-repeat:no-repeat;
-    background-image : url(../images/sun2.png);
-    background-position:115% -120%;
-}
-.soir.tantot {
-    width: 60%;
-    background-repeat:no-repeat;
-    background-image : url(../images/moon1.png);
-    background-position:108% 50%;
-}
-
-.midi.matin {
-    background-color: lightgoldenrodyellow; 
-    width: 60%;
-    color: chocolate; 
-    background-repeat:no-repeat;
-    background-image : url(../images/sun.png);
-    background-position:110% 90%;
-}
-.soir.matin {
-    width: 40%;
-    background-repeat:no-repeat;
-    background-image : url(../images/moon2.png);
-    background-position:102% 50%;
-}
-
-.unecase.soir.num9 {
-    background-image : url(../images/logosansfond.png);
-    background-position:100% 0%;
-}
-
-/* pour la saisie des menus */
-.midi.saisi {
-    background-color: lightgoldenrodyellow; 
-
-    color: chocolate; 
-
-}
-
 .saisi {
     width: 40%;
     margin: 5px;
-}
-/* la case sélectionnée : c'est-à-dire celle qu'on met en valeur */
-.selection {
-    font-size : 1.2em;
-    height: 120px;
-}
-
-.selection.tantot{
-    background-color: #dadada ; 
-}
-
-.selection.matin{
-    background-color:  aqua ; 
-    color:  maroon; 
-}
-/* si c'est un message*/ 
-.message {
-    margin: auto ;
-    text-align: center;
-    font-size : 1.4em;
 }
 
 /* tous les formulaires */
@@ -258,6 +173,12 @@ Formulaire changement de mot de passe
 .boutonChanger {
     margin-left: 450px;
 }
+
+td {
+    text-align:  center;
+    max-width: 180px;
+}
+
 /************************************************************************
 navigation du menu
  ************************************************************************/
@@ -270,7 +191,7 @@ nav.principal {
 
 /**
 Entete design avec coin arrondi
-affiche les dates de la semaine
+affiche le titre de la page
 */
 
 .entete {
@@ -279,10 +200,73 @@ affiche les dates de la semaine
     width: 800px;
     color:  chocolate;
     border-radius : 0 0 20px 0  / 0 0 90% 0  ;
+    position: fixed;
 }
 
 body>section>header.principal {
     font-size : 1.4em;
+}
+/* corps principal */
+section.corps {
+    display : flex;
+    flex-flow : row-reverse nowrap;
+    justify-content: space-between ;
+
+}
+section.application {
+
+    width : 83%;
+}
+section.colonneGauche{
+    width : 15%;
+    padding-left: 5px;
+    position: fixed;
+    top: 20%;
+    left : 2%;
+}
+/* menu flottant */
+section.menuflottant {    
+    padding: 3px;
+    color: white;
+    
+}
+#monMenu a {
+    text-decoration: none;
+    color : white;
+}
+#monMenu ul ul {
+    display: none;
+    position: absolute;
+    left: 204px;
+    top: -1px;
+    margin:0px;
+    padding: 0px;
+    border: 1px solid grey;
+}
+#monMenu li {
+    list-style-type: none;
+    position: relative;
+    width: 200px;
+    padding: 2px;
+    margin: 0px;
+    background-color: #333;
+}
+
+#monMenu *.nouveau {
+    color : lightblue;
+}
+
+#monMenu li:hover {
+    border: 1px solid grey;
+    color: white;
+}
+#monMenu li:hover ul.niveau2, #monMenu li li:hover ul.niveau3 {
+    display: block;    
+}
+#monMenu li.plus {
+    background-position:right;
+    background-image: url(../images/droit-icone-6939-32.png);
+    background-repeat: no-repeat;    
 }
 
 /* Pied de page */
@@ -293,7 +277,7 @@ footer {
     display : flex;
     flex-flow : column wrap-reverse;
     justify-content:  flex-end;
-    margin-right: 5px;
+    /*position: fixed;*/
 
 
 
@@ -302,7 +286,7 @@ footer {
 
 footer>nav {
     background-color : whitesmoke;
-    margin: 10px 0 10px 0; 
+    margin: 10px 0 0 0; 
     width: 800px;
     color:  chocolate;
     border-radius : 20px 0 0 0  / 90% 0 0 0  ;
@@ -315,13 +299,4 @@ div.pied {
 
 div.pied>p {
     margin : 0px;
-}
-
-table {
-   
-}
-
-td {
-    text-align:  center;
-    width: 200px;
 }

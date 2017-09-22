@@ -88,7 +88,6 @@ class PDOTrombi {
         $sth = PdoTrombi::$monPdo->prepare($sql);
         $sth->execute(array($date->format('Y-m-d H:i:s'), $num));
         $this->logSQL($sql);
-        //$rs =  PdoTrombi::$monPdo->exec($sql);
     }
 
     /** insère un nouvel utilisateur dans la base
@@ -683,12 +682,46 @@ class PDOTrombi {
     }
 
     /** retourne les élèves d'une classe avec le chemin d'accès au répertoire du fichier de l'élève
-     * 
+     * requête qui alimente les trombis avec un critère supplémentaire
+     * @param int $numt
+     * @return table résultat
+     */
+    public function getLesElevesOption($numt, $option = null) {
+        if (null === $option) {
+            $sql = "SELECT c.num as numclasse,  e.nom as nomeleve, f.num as numfichier, r.nom as path, c.nom as nomclasse, prenom, e.num as numeleve,"
+                    . " f.nom as nomfichier, f.suffixe as extension FROM " . PdoTrombi::$prefixe . "eleve e left join " . PdoTrombi::$prefixe
+                    . "fichier f on numfichier=f.num left join " . PdoTrombi::$prefixe . "repertoire r on f.numrepertoire=r.num join " . PdoTrombi::$prefixe
+                    . "classe c on e.numclasse=c.num where c.numtrombi= ? order by c.nom,e.nom,prenom";
+            ;
+            $this->logSQL($sql . " " . $numt);
+            $sth = PdoTrombi::$monPdo->prepare($sql);
+            $sth->execute(array($numt));
+        } else {
+            $sql = "SELECT c.num as numclasse,  e.nom as nomeleve, f.num as numfichier, r.nom as path, c.nom as nomclasse, prenom, e.num as numeleve,"
+                    . " f.nom as nomfichier, f.suffixe as extension, valeur FROM "
+                    . PdoTrombi::$prefixe . "eleve e left join " . PdoTrombi::$prefixe . "fichier f on numfichier=f.num left join " . PdoTrombi::$prefixe
+                    . "repertoire r on f.numrepertoire=r.num join " . PdoTrombi::$prefixe . "classe c on e.numclasse=c.num left join " . PdoTrombi::$prefixe
+                    . "valeur v on v.numeleve= e.num where c.numtrombi= ? and v.numpropriete=?"
+                    . "order by c.nom,e.nom,prenom";
+            $this->logSQL($sql . " " . $numt, $option);
+            $sth = PdoTrombi::$monPdo->prepare($sql);
+            $sth->execute(array($numt, $option));
+        }
+        $result = $sth->fetchAll();
+        return $result;
+    }
+
+    /** retourne les élèves d'une classe avec le chemin d'accès au répertoire du fichier de l'élève
+     * requête qui alimente les trombis 
      * @param int $numt
      * @return table résultat
      */
     public function getLesEleves($numt) {
-        $sql = "SELECT c.num as numclasse,  e.nom as nomeleve, f.num as numfichier, r.nom as path, c.nom as nomclasse, prenom, e.num as numeleve, f.nom as nomfichier, f.suffixe as extension FROM " . PdoTrombi::$prefixe . "eleve e left join " . PdoTrombi::$prefixe . "fichier f on numfichier=f.num left join " . PdoTrombi::$prefixe . "repertoire r on f.numrepertoire=r.num join " . PdoTrombi::$prefixe . "classe c on e.numclasse=c.num where c.numtrombi= ? order by c.nom,2,6";
+
+        $sql = "SELECT c.num as numclasse,  e.nom as nomeleve, f.num as numfichier, r.nom as path, c.nom as nomclasse, prenom, e.num as numeleve,"
+                . " f.nom as nomfichier, f.suffixe as extension FROM " . PdoTrombi::$prefixe . "eleve e left join " . PdoTrombi::$prefixe
+                . "fichier f on numfichier=f.num left join " . PdoTrombi::$prefixe . "repertoire r on f.numrepertoire=r.num join " . PdoTrombi::$prefixe
+                . "classe c on e.numclasse=c.num where c.numtrombi= ? order by c.nom,e.nom,prenom";
         ;
         $this->logSQL($sql . " " . $numt);
         $sth = PdoTrombi::$monPdo->prepare($sql);
@@ -696,35 +729,38 @@ class PDOTrombi {
         $result = $sth->fetchAll();
         return $result;
     }
+
     /** retourne le nombre d'élèves maxi par classe d'un trombi
      * 
      * @param int $numt
      * @return int
      */
     public function getNbElevesParClasseMax($numt) {
-        $sql= "SELECT count(*) as nb FROM " . PdoTrombi::$prefixe . "eleve e join " . PdoTrombi::$prefixe . "classe c on numclasse=c.num where c.numtrombi= ? group by numclasse having COUNT(*) >= all (select count(*) FROM " . PdoTrombi::$prefixe . "eleve join " . PdoTrombi::$prefixe . "classe on numclasse = " . PdoTrombi::$prefixe . "classe.num where " . PdoTrombi::$prefixe . "classe.numtrombi= ? group by numclasse )";
-        
+        $sql = "SELECT count(*) as nb FROM " . PdoTrombi::$prefixe . "eleve e join " . PdoTrombi::$prefixe . "classe c on numclasse=c.num where c.numtrombi= ? group by numclasse having COUNT(*) >= all (select count(*) FROM " . PdoTrombi::$prefixe . "eleve join " . PdoTrombi::$prefixe . "classe on numclasse = " . PdoTrombi::$prefixe . "classe.num where " . PdoTrombi::$prefixe . "classe.numtrombi= ? group by numclasse )";
+
         $this->logSQL($sql . " " . $numt);
         $sth = PdoTrombi::$monPdo->prepare($sql);
-        $sth->execute(array($numt,$numt));
+        $sth->execute(array($numt, $numt));
         $result = $sth->fetch();
-        $this->logSQL( "==> " . $result['nb']);
+        $this->logSQL("==> " . $result['nb']);
         return $result['nb'];
     }
+
     /** retourne le nombre d'élèves  pour chaque classe d'un trombi
      * 
      * @param int $numt
      * @return array
      */
     public function getNbElevesParClasse($numt) {
-        $sql= "SELECT count(*) as nb FROM " . PdoTrombi::$prefixe . "eleve e join " . PdoTrombi::$prefixe . "classe c on numclasse=c.num where c.numtrombi= ? group by numclasse order by c.nom";
-        
+        $sql = "SELECT count(*) as nb FROM " . PdoTrombi::$prefixe . "eleve e join " . PdoTrombi::$prefixe . "classe c on numclasse=c.num where c.numtrombi= ? group by numclasse order by c.nom";
+
         $this->logSQL($sql . " " . $numt);
         $sth = PdoTrombi::$monPdo->prepare($sql);
         $sth->execute(array($numt));
         $result = $sth->fetchAll();
         return $result;
     }
+
     public function setParametres($nt, $p) {
         $this->logSQL("avant la requete");
         $sql = "INSERT INTO " . PdoTrombi::$prefixe . "parametres (numtrombi, titre, orientation, cheminphoto, logo, nbcol, nblig, margeDroite,
@@ -747,11 +783,11 @@ class PDOTrombi {
         return $retour;
     }
 
-    public function addPropriete($nt,$lib){
+    public function addPropriete($nt, $lib) {
         $sql = "INSERT INTO " . PdoTrombi::$prefixe . "propriete (libelle,numtrombi) VALUES (?,?)";
-        $this->logSQL($sql.' '.$lib.' '.$nt);
+        $this->logSQL($sql . ' ' . $lib . ' ' . $nt);
         $sth = PdoTrombi::$monPdo->prepare($sql);
-        $sth->execute(array($lib,$nt));
+        $sth->execute(array($lib, $nt));
         if ($sth) {
             $retour = PdoTrombi::$monPdo->lastInsertId();
         } else {
@@ -759,12 +795,12 @@ class PDOTrombi {
         }
         return $retour;
     }
-    
-    public function setValeurPropriete($numEleve,$numPropriete,$valeur){
+
+    public function setValeurPropriete($numEleve, $numPropriete, $valeur) {
         $sql = "INSERT INTO " . PdoTrombi::$prefixe . "valeur (numeleve,numpropriete,valeur) VALUES (?,?,?)";
-        $this->logSQL($sql.' '.$numEleve.' '.$numPropriete.' '.$valeur);
+        $this->logSQL($sql . ' ' . $numEleve . ' ' . $numPropriete . ' ' . $valeur);
         $sth = PdoTrombi::$monPdo->prepare($sql);
-        $sth->execute(array($numEleve,$numPropriete,$valeur));
+        $sth->execute(array($numEleve, $numPropriete, $valeur));
         if ($sth) {
             $retour = PdoTrombi::$monPdo->lastInsertId();
         } else {
@@ -772,16 +808,17 @@ class PDOTrombi {
         }
         return $retour;
     }
-    
-    public function renommerFichier($numt){
+
+    public function renommerFichier($numt) {
         // récupérer les élèves du trombi, récupérer leur classe puis renommer en une seule requete 
-        $g=chr(34);
-        $gg=$g." ".$g;
-        $g2=$g."_".$g;
-        $sql = "UPDATE `trombi_fichier` f SET `nom`= (select replace(concat(c.nom,".$g2.",e.nom,".$g2.", e.prenom),".$gg.",".$g2.") from " . PdoTrombi::$prefixe . "classe c join " . PdoTrombi::$prefixe . "eleve e on e.numclasse=c.num where f.num = e.numfichier) WHERE `numtrombi`= ?";
-        $this->logSQL($sql.' '.$numt);
+        $g = chr(34);
+        $gg = $g . " " . $g;
+        $g2 = $g . "_" . $g;
+        $sql = "UPDATE `trombi_fichier` f SET `nom`= (select replace(concat(c.nom," . $g2 . ",e.nom," . $g2 . ", e.prenom)," . $gg . "," . $g2 . ") from " . PdoTrombi::$prefixe . "classe c join " . PdoTrombi::$prefixe . "eleve e on e.numclasse=c.num where f.num = e.numfichier) WHERE `numtrombi`= ?";
+        $this->logSQL($sql . ' ' . $numt);
         $sth = PdoTrombi::$monPdo->prepare($sql);
         $sth->execute(array($numt));
         return $sth;
     }
+
 }

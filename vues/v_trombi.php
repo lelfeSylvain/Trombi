@@ -20,12 +20,14 @@ echo $message;
         <a href="index.php?uc=action&num=supprimer&e=<?php echo $unEleve['numeleve']; ?>" class='action'>supprimer</a>
 
         <a href="index.php?uc=upload&num=Mono0&e=<?php echo $unEleve['numeleve']; ?>">
-            <img title="<?php echo $unEleve['numeleve'] . ' : ' . $unEleve['numfichier'] . ' - ' . dec2hex($unEleve['numfichier']); ?>" src="<?php echo $DOSSIERUPLOAD . $unEleve['path'] . "/" . dec2hex($unEleve['numfichier']) . ".jpg"; ?>" height="200" > 
+            <img title="<?php echo $unEleve['numeleve'] . ' : ' . $unEleve['numfichier'] . ' - ' . dec2hex($unEleve['numfichier']); ?>" src="<?php echo $DOSSIERUPLOAD . $unEleve['path'] . "/" . dec2hex($unEleve['numfichier']) . ".jpg"; ?>"  width="80" > 
         </a><p class="petitepolice"><?php
-            echo ucwords($unEleve['prenom']) . "<br />" . strtoupper($unEleve['nomeleve']);
+            echo ucwords($unEleve['prenom']) . "<br />" . strtoupper(couperNom($unEleve['nomeleve']));
+            if (isset($unEleve['valeur'])) 
+                echo "<br /><i>" . strtoupper(couperNom($unEleve['valeur']))."</i>";
             echo "</p></td>";
             $i++;$nb++;
-            if (6 < $i) {
+            if (8 < $i) {
                 $i = 0;
                 echo "</tr><tr>";
             }

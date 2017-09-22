@@ -2,6 +2,7 @@
 <?php
 /* Projet Trombi V1 
   sylvain 25 juillet 2016
+ * modifié septembre 2017
  */
 $PATH='';
 require_once $PATH.'inc/fonctions.php'; //appelle tous les 'include' et fonctions utilitaires
@@ -31,8 +32,8 @@ elseif (!Session::isLogged()) {
     // justement on enregistre la dernière activité de l'utilisateur dans la BD
     $pdo->setDerniereCx($_SESSION['numUtil']);
 //echo $uc.EOL;
-    // gère le fil d'ariane : TODO à gérer
-    //include_once 'controleurs/c_ariane.php';
+    // gère le fil d'ariane 
+    include 'controleurs/c_accueil.php';
     //aiguillage principal
     switch ($uc) {
         case 'upload': {// uc charger une/des image/s
@@ -51,10 +52,6 @@ elseif (!Session::isLogged()) {
                 include("controleurs/c_afficher.php");
                 break;
             }
-        case 'genererpdf': {// uc generer trombi
-                include("controleurs/c_genererpdf.php");
-                break;
-            }
         case 'action': {// uc gestion des images du trombi
           include("controleurs/c_action.php");
           break;
@@ -68,14 +65,18 @@ elseif (!Session::isLogged()) {
                 break;
             }
         case 'defaut' :;
-        default :  // par défaut on consulte les posts
-            include("controleurs/c_accueil.php");
+        default :  // par défaut on affiche
+            include("controleurs/c_afficher.php");
+            //include("controleurs/c_accueil.php");
     }
 }
 /*
  * une visite a lieu, mémorisons-la
  */
 //include('controleurs/c_visite.php');
+?>
+</section>
+<?php
 include('controleurs/c_navigation.php');
 
 
