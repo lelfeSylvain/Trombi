@@ -1,4 +1,5 @@
 <?php
+
 if ("choix" === substr($num, 0, 5)) {
     $nc = filter_input(INPUT_GET, 'nc', FILTER_SANITIZE_STRING);
     if ("choixtrombi" === $num) {
@@ -15,5 +16,5 @@ if ("choix" === substr($num, 0, 5)) {
 }
 
 $lesClasseurs = $pdo->getLesTrombis($_SESSION['numUtil']);
-$_SESSION['etape'] = 0;
+
 

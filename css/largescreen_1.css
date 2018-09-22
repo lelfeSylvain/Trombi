@@ -189,23 +189,9 @@ nav.principal {
     margin-top: 10px;
 }
 
-/**
-Entete design avec coin arrondi
-affiche le titre de la page
-*/
 
-.entete {
-    background-color : whitesmoke;
-    height: 30px;
-    width: 800px;
-    color:  chocolate;
-    border-radius : 0 0 20px 0  / 0 0 90% 0  ;
-    position: fixed;
-}
 
-body>section>header.principal {
-    font-size : 1.4em;
-}
+
 /* corps principal */
 section.corps {
     display : flex;
@@ -228,7 +214,7 @@ section.colonneGauche{
 section.menuflottant {    
     padding: 3px;
     color: white;
-    
+    font-size : 0.8em;
 }
 #monMenu a {
     text-decoration: none;
@@ -252,7 +238,7 @@ section.menuflottant {
     background-color: #333;
 }
 
-#monMenu *.nouveau {
+#monMenu a.nouveau {
     color : lightblue;
 }
 
@@ -269,34 +255,4 @@ section.menuflottant {
     background-repeat: no-repeat;    
 }
 
-/* Pied de page */
-/* pied de page principal qui est au dessous de la section principal */
-footer {
-    font-size : 0.8em;
-    text-align: right;
-    display : flex;
-    flex-flow : column wrap-reverse;
-    justify-content:  flex-end;
-    /*position: fixed;*/
 
-
-
-
-}
-
-footer>nav {
-    background-color : whitesmoke;
-    margin: 10px 0 0 0; 
-    width: 800px;
-    color:  chocolate;
-    border-radius : 20px 0 0 0  / 90% 0 0 0  ;
-
-}
-
-div.pied {
-    padding-right: 5px;
-}
-
-div.pied>p {
-    margin : 0px;
-}

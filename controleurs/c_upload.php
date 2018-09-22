@@ -1,5 +1,4 @@
 <?php
-
 // paramètres 
 
 $tailleMaxi = 100000; // On limite le fichier à 100Ko 
@@ -11,7 +10,7 @@ if ('Mono0' === $num) {
 } else {
     $numEleve = $pdo->getLesNumEleveSansPhoto($_SESSION['nt']);
 }
-$nb = 0;
+$nb = 0; 
 
 
 if ('Mono1' === $num) {

@@ -1,8 +1,6 @@
-Changer votre mot de passe </div>
-
-</header>
+Changer votre mot de passe </nav>
 <?php
-echo $texteNav;
+if (!empty($texteNav)) echo $texteNav;
 ?>
 <form method="post" action="index.php?uc=changer&num=check" id='chgMDP' class="formulaire" onsubmit="encodeMDPenMD5()" >
     <div class='formulaireLigneDesc'>               

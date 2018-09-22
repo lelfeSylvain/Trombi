@@ -1,37 +1,81 @@
-Afficher un trombi</div></header>
-<?php include('vues/v_ariane.php');
-echo $message;
-?>
-<table><tr>    
+<?php if ('Multi' != substr($num, 0, 5)) { ?> Afficher un trombi
+    </nav>
+    <br><br><?php } ?>
+<section class='col-xs-11 col-sm-10'>
+    <div class="row">
+        <?php
+        if (!empty($message))
+            echo $message;
+        /*if (!empty($messageUpload))
+            echo $messageUpload;*/
+        ?>
+        <p class='col-sm-12'><a href='vues/v_genererpdf.php?sens=P' target='_blank' class='demo'>voir le PDF</a> ou en mode <a href='vues/v_genererpdf.php?sens=L' target='_blank' class='demo'>paysage</a></p>
+
+
         <?php
 /// affichage du trombi
-        $i = 0;$nb=0;
+        $i = 0;
+        $nb = 0;
         $numclasse = -1;
-        foreach ($lesEleves as $unEleve) {
-            if ($numclasse != $unEleve['numclasse']) {
-                if (-1!=$numclasse) {echo "<td>".$nb.pluriel($nb," élève")."</td>";}
-                echo "</tr><tr><td>" . $unEleve['nomclasse'] . "</td></tr><tr><td>";
-                $numclasse = $unEleve['numclasse'];
-                $i = 0;$nb=0;
-            } else
-                echo "<td>";
-            ?>
-        <a href="index.php?uc=action&num=liberer&e=<?php echo $unEleve['numeleve']; ?>" class='action'>liberer</a>
-        <a href="index.php?uc=action&num=supprimer&e=<?php echo $unEleve['numeleve']; ?>" class='action'>supprimer</a>
-
-        <a href="index.php?uc=upload&num=Mono0&e=<?php echo $unEleve['numeleve']; ?>">
-            <img title="<?php echo $unEleve['numeleve'] . ' : ' . $unEleve['numfichier'] . ' - ' . dec2hex($unEleve['numfichier']); ?>" src="<?php echo $DOSSIERUPLOAD . $unEleve['path'] . "/" . dec2hex($unEleve['numfichier']) . ".jpg"; ?>"  width="80" > 
-        </a><p class="petitepolice"><?php
-            echo ucwords($unEleve['prenom']) . "<br />" . strtoupper(couperNom($unEleve['nomeleve']));
-            if (isset($unEleve['valeur'])) 
-                echo "<br /><i>" . strtoupper(couperNom($unEleve['valeur']))."</i>";
-            echo "</p></td>";
-            $i++;$nb++;
-            if (8 < $i) {
-                $i = 0;
-                echo "</tr><tr>";
-            }
-        }
-        echo "</tr></table>";
+        $nbPhoto = 10; // nombre de photos par ligne
         ?>
-    <p class='demo'><a href='vues/v_genererpdf.php?sens=P' target='_blank' class='demo'>voir le PDF</a> ou en mode <a href='vues/v_genererpdf.php?sens=L' target='_blank' class='demo'>paysage</a></p>
+
+        <?php
+        foreach ($lesEleves as $unEleve) {
+            ?>
+
+            <?php
+            if ($numclasse != $unEleve['numclasse']) {// afficher le nom de la classe
+                if (-1 != $numclasse) {//    afficher le nombre d'élève
+                    echo '<div class="col-sm-12 text-right">' . $nb . pluriel($nb, " élève") . '</div>';
+                }
+                echo '<div class="col-sm-12 text-left">' . $unEleve['nomclasse'] . '</div>';
+                $numclasse = $unEleve['numclasse'];
+                $i = 0;
+                $nb = 0;
+            } else
+                
+                ?>
+            <div class='col-xs-4 col-sm-3 col-md-2 col-lg-1'>
+                <div class='row small'>
+                    <div class='col-xs-1 col-sm-2'>
+                        <a href="index.php?uc=action&num=liberer&e=<?php echo $unEleve['numeleve']; ?>" title='libérer la photo' class='btn-secondary'><span class="fa fa-unlink"></span></a>
+                    </div>
+
+                    <div class='col-xs-1 col-sm-2'>
+                        <a href="index.php?uc=action&num=supprimer&e=<?php echo $unEleve['numeleve']; ?>" class='btn-secondary' title='supprimer la photo' ><span class="fa fa-user-times"></span></a>
+                    </div>
+
+
+                    <div class='col-xs-1 col-sm-2'>
+                        <a href="index.php?uc=action&num=supprimertout&e=<?php echo $unEleve['numeleve']; ?>" class='btn-danger' title='supprimer la personne et la photo' ><span class="fa fa-trash"></span></a>
+                    </div>
+                    <div class='col-sm-12'>
+                        <a href="index.php?uc=upload&num=Mono0&e=<?php echo $unEleve['numeleve']; ?>">
+                            <img class='img-fluid' title="<?php echo $unEleve['numeleve'] . ' : ' . $unEleve['numfichier'] . ' - ' . dec2hex($unEleve['numfichier']); ?>" src="<?php if (empty($unEleve['path'])) {$cheminImage=$IMAGEINCONNUE;}else{$cheminImage=$DOSSIERUPLOAD . $unEleve['path'] . "/" . dec2hex($unEleve['numfichier']) . $unEleve['extension'];} echo $cheminImage; ?>"  width="80" > 
+                        </a>
+                    </div>
+                    <div class='col-sm-12 small'>
+                        <?php
+                        echo ucwords($unEleve['prenom']) . "<br />" . strtoupper(couperNom($unEleve['nomeleve']));
+                        if (isset($unEleve['valeur'])) {
+                            echo "<br /><i>" . strtoupper(couperNom($unEleve['valeur'])) . "</i>";
+                        }
+                        ?>
+                        <?php
+                        $i++;
+                        $nb++;
+                        if ($nbPhoto <= $i) {
+                            $i = 0;
+                        }
+                        ?>
+
+                    </div>
+                </div>
+            </div>
+            <?php
+        }
+        echo '<div class="col-sm-12 text-right">' . $nb . pluriel($nb, " élève") . '</div>';
+        ?>
+    </div>
+</section>  

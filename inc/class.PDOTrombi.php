@@ -322,10 +322,22 @@ class PDOTrombi {
      * @return type
      */
     public function deleteFichier($numfile) {
-        $sql = "DELETE " . PdoTrombi::$prefixe . "fichier where num=?";
+        $sql = "DELETE FROM " . PdoTrombi::$prefixe . "fichier where num=?";
         $this->logSQL($sql . " " . $numfile);
         $sth = PdoTrombi::$monPdo->prepare($sql);
         $sth->execute(array($numfile));
+    }
+
+    /** efface de la BD l'élève
+     * 
+     * @param int $numEleve
+     * @return type
+     */
+    public function deleteEleve($numEleve) {
+        $sql = "DELETE FROM " . PdoTrombi::$prefixe . "eleve where num=?";
+        $this->logSQL($sql . " " . $numEleve);
+        $sth = PdoTrombi::$monPdo->prepare($sql);
+        $sth->execute(array($numEleve));
     }
 
     /**
@@ -431,7 +443,10 @@ class PDOTrombi {
      * @return tableaux résultat de la requête
      */
     public function getLesTrombis($numUser) {
-        $sql = "SELECT c.num as numc, c.nom as nomc, c.ts as tsc, t.num as numt, t.nom as nomt, t.ts as tst FROM " . PdoTrombi::$prefixe . "classeur c left join " . PdoTrombi::$prefixe . "trombi t on numclasseur=c.num   where numuser= ? order by 2,5";
+        $sql = "SELECT c.num as numc, c.nom as nomc, c.ts as tsc, t.num as numt,"
+                . " t.nom as nomt, t.ts as tst FROM " . PdoTrombi::$prefixe 
+                . "classeur c left join " . PdoTrombi::$prefixe . "trombi t"
+                . " on numclasseur=c.num   where numuser= ? order by 2,5";
         $this->logSQL($sql . " " . $numUser);
         $sth = PdoTrombi::$monPdo->prepare($sql);
         $sth->execute(array($numUser));
@@ -510,7 +525,7 @@ class PDOTrombi {
 
     private function updateRep($numRep, $nomRep) {
         $sql = "UPDATE " . PdoTrombi::$prefixe . "repertoire set nom= ? WHERE num = ?";
-        $this->logSQL($sql . " " . $numRep . " " . $nomRep);
+        $this->logSQL($sql . " " . $nomRep . " " . $numRep);
         $sth = PdoTrombi::$monPdo->prepare($sql);
         $sth->execute(array($nomRep, $numRep));
     }
@@ -527,7 +542,18 @@ class PDOTrombi {
         $result = $sth->fetch();
         return $result['m'];
     }
-
+   /** renvoie la valeur maximum des idf des trombis
+     * 
+     * @return entier
+     */
+    public function getMaxNumTrombi() {
+        $sql = "SELECT max(num) as m FROM " . PdoTrombi::$prefixe . "trombi";
+        $this->logSQL($sql);
+        $sth = PdoTrombi::$monPdo->prepare($sql);
+        $sth->execute(array());
+        $result = $sth->fetch();
+        return $result['m'];
+    }
     /** renvoie le numéro du classeur du trombi associé
      * 
      * @param int $numt
@@ -801,6 +827,49 @@ class PDOTrombi {
         $this->logSQL($sql . ' ' . $numEleve . ' ' . $numPropriete . ' ' . $valeur);
         $sth = PdoTrombi::$monPdo->prepare($sql);
         $sth->execute(array($numEleve, $numPropriete, $valeur));
+        if ($sth) {
+            $retour = PdoTrombi::$monPdo->lastInsertId();
+        } else {
+            $retour = false;
+        }
+        return $retour;
+    }
+/** permet de recopier les classes d'un trombi dans un second. 
+ * Atention ne renvoie que l'id de la dernière classe insérée
+ * @param type $numTrombiOrigine id du trombi source
+ * @param type $numTrombiDest id du trombi destination
+ * @return valeur de la dernière classe insérée ou false
+ */
+    public function copyClasse($numTrombiOrigine, $numTrombiDest) {
+        $sql = "INSERT INTO " . PdoTrombi::$prefixe . "classe (nom,numtrombi) "
+                . "select C.nom, ? from " . PdoTrombi::$prefixe . "classe C "
+                . "where C.numtrombi=?";
+        $this->logSQL($sql . ', ' . $numTrombiDest . ', ' . $numTrombiOrigine);
+        $sth = PdoTrombi::$monPdo->prepare($sql);
+        $sth->execute(array($numTrombiDest, $numTrombiOrigine));
+        if ($sth) {
+            $retour = PdoTrombi::$monPdo->lastInsertId();
+        } else {
+            $retour = false;
+        }
+        return $retour;
+    }
+    /** Recopie les élèves de toutes les classes du trombi origine vers le trombi dest
+     * 
+     * @param type $numTrombiOrigine
+     * @param type $numTrombiDest
+     * @return valeur du dernier élève inséré ou false
+     */ 
+        public function copyEleve($numTrombiOrigine, $numTrombiDest) {
+        $sql = "INSERT INTO " . PdoTrombi::$prefixe . "eleve (nom,prenom, numclasse, numfichier) "
+                . "select E.nom, E.prenom, C2.num, E.numfichier"
+                . " from " . PdoTrombi::$prefixe . "eleve E"
+                . " join ". PdoTrombi::$prefixe . "classe C on C.num=E.numclasse "
+                ."join ". PdoTrombi::$prefixe . "classe C2 on C2.nom=C.nom "
+                . "where C2.numtrombi=? and  C.numtrombi=?";
+        $this->logSQL($sql . ', ' . $numTrombiDest . ', ' . $numTrombiOrigine);
+        $sth = PdoTrombi::$monPdo->prepare($sql);
+        $sth->execute(array($numTrombiDest, $numTrombiOrigine));
         if ($sth) {
             $retour = PdoTrombi::$monPdo->lastInsertId();
         } else {

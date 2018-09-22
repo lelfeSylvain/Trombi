@@ -16,8 +16,10 @@ $tabMois = array("janvier", "février", "mars", "avril", "mai", "juin", "juillet
 $_SESSION['debug'] = "hidden";
 // dossier des uploads
 $DOSSIERUPLOAD = 'upload/';
+$IMAGEINCONNUE=$DOSSIERUPLOAD .'00000000/00000000.jpg';//$this->path.'/inconnu.jpg'
 // augmenter le nombre de fichiers télécharger max
 ini_set('max_file_uploads', 300); // 300 à optimiser si besoin
+if (empty($_SESSION['etape'])) $_SESSION['etape']=0;
 //
 //
 // TODO effacer le mode debug

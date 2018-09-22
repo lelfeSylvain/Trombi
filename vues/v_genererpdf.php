@@ -49,16 +49,16 @@ class PDF extends FPDF {
         $this->SetSubject($t);
         $this->SetAutoPageBreak(false);
 
-        // on calcule la largeur idéale d'une photo en prenant la largeur
-        //  de la page totale et en enlevant les marges gauche et droite et 
-        //  celle entre les photos
+// on calcule la largeur idéale d'une photo en prenant la largeur
+//  de la page totale et en enlevant les marges gauche et droite et 
+//  celle entre les photos
         $this->largeurPhoto = ($this->GetPageWidth() - ($this->margeDroite + $this->margeGauche + ($this->nbcol - 1) * $this->margeHEntrePhotos)) / $this->nbcol;
         $this->hauteurPhoto = ($this->GetPageHeight() - ($this->hauteurTitre + $this->margeBas + ($this->nblig ) * $this->margeVEntrePhotos)) / $this->nblig;
         $this->utiliseEchelleVerticale = false;
-        // calcule des dimensions moyennes, mini, maxi des photos à afficher
+// calcule des dimensions moyennes, mini, maxi des photos à afficher
         $this->calculerStatPhotos();
-        // si la hauteur moyenne des photos est supérieur à la hauteur calculée, 
-        // il vaut mieux cadrer les photos verticalement plutôt qu'horizontalement
+// si la hauteur moyenne des photos est supérieur à la hauteur calculée, 
+// il vaut mieux cadrer les photos verticalement plutôt qu'horizontalement
         if ($this->hauteurMoy > $this->hauteurPhoto) {
             $this->utiliseEchelleVerticale = true;
             $this->largeurPhoto = $this->largeurMoy;
@@ -70,7 +70,7 @@ class PDF extends FPDF {
     }
 
     function getParametres() {
-        $p = [ $this->mesParametres->getTitre(),
+        $p = [$this->mesParametres->getTitre(),
             $this->mesParametres->getOrientation(),
             $this->mesParametres->getPath(),
             $this->mesParametres->getLogo(),
@@ -102,8 +102,12 @@ class PDF extends FPDF {
         $vmoy = 0;
         $i = 0;
         foreach ($this->lesEleves as $unEleve) {
-            $chemin = $this->path . $unEleve['path'] . "/" . dec2hex($unEleve['numfichier']) . ".jpg";
-            $ratio = $this->ratioH($chemin);
+            $unEleve['chemin'] = $this->path . $unEleve['path'] . "/" . dec2hex($unEleve['numfichier']) . $unEleve['extension'];
+            if (strlen($unEleve['chemin']) < 30) { // si le chemin est trop court, c'est qu'il n'y a pas d'image attachée, 
+//  on remplace  le chemin par celui de la photo inconnue.
+                $unEleve['chemin'] = $IMAGEINCONNUE;
+            }
+            $ratio = $this->ratioH($unEleve['chemin']);
             $hauteur = $ratio * $this->largeurPhoto;
             $largeur = (1 / $ratio) * $this->hauteurPhoto;
             if ($hauteur > $hmax) {
@@ -136,8 +140,11 @@ class PDF extends FPDF {
     }
 
     private function ratioH($chemin) {
-        list($width, $height, $type, $attr) = getimagesize($chemin);
-        return $height / $width;
+        if (!empty($chemin)) {
+            list($width, $height, $type, $attr) = getimagesize($chemin);
+            return $height / $width;
+        } else
+            return 1;
     }
 
     private function ratioV($chemin) {
@@ -152,18 +159,27 @@ class PDF extends FPDF {
                 $this->AddPage();
                 $x = $this->margeGauche;
                 $y = $this->hauteurTitre;
-                // on place le titre de la page
+// on place le titre de la page
                 $this->affiche(0, 20, $unEleve['nomclasse'], true, 15, true);
-                // on se souvient de la classe actuelle
+// on se souvient de la classe actuelle
                 $numclasse = $unEleve['numclasse'];
                 $i = 0;
                 $j = 0;
                 $this->nbPhotoPage = 0;
             }
-            $this->setImage($x, $y, $this->path . $unEleve['path'] . "/" . dec2hex($unEleve['numfichier']) . ".jpg");
-
+            $chemin = $this->path . $unEleve['path'] . "/" . dec2hex($unEleve['numfichier']) . $unEleve['extension'];
+            if (strlen($chemin) < 30) { // si le chemin est trop court, c'est qu'il n'y a pas d'image attachée, 
+//  on remplace  le chemin par celui de la photo inconnue.
+                $chemin = $IMAGEINCONNUE;
+            }
+            try {
+                $this->setImage($x, $y, $chemin);
+            } catch (Exception $e) {
+                var_dump ($unEleve);
+                echo 'Exception reçue : ', $x, $y, $chemin, $e->getMessage(), "\n";
+            }
             $this->affiche($x, $y + $this->hauteurPhoto, ucwords($unEleve['prenom']));
-            //$this->affiche($x, $y + 30, $this->largeurPhoto*$this->ratio($this->path . $unEleve['path'] . "/" . dec2hex($unEleve['numfichier']) . ".jpg"));
+//$this->affiche($x, $y + 30, $this->largeurPhoto*$this->ratio($this->path . $unEleve['path'] . "/" . dec2hex($unEleve['numfichier']) . ".jpg"));
             $this->affiche($x, $y + $this->hauteurPhoto + $this->hauteurEtiquette, strtoupper($unEleve['nomeleve']), true);
             $this->nbPhotoPage++;
 
@@ -181,9 +197,9 @@ class PDF extends FPDF {
     }
 
     private function affiche($x, $y, $texte, $estGras = false, $taille = 10, $estCentreDansLaPage = false) {
-        // on décode le texte utf8 -> windows qui est le format utilisé par FPDF (hélas)
+// on décode le texte utf8 -> windows qui est le format utilisé par FPDF (hélas)
         $tex = utf8_decode($texte);
-        // s'il est gras...
+// s'il est gras...
         if ($estGras) {
             $g = "B";
         } else {
@@ -206,7 +222,7 @@ class PDF extends FPDF {
     }
 
     function Header() {
-        // Logo
+// Logo
         $this->Image($this->logo, 10, 6, 30);
 
         $this->affiche(0, 10, $this->titre, true, 15, true);
@@ -219,18 +235,19 @@ class PDF extends FPDF {
         } else {
             $s = " - ";
         }
-        // Positionnement � 1,5 cm du bas
+// Positionnement � 1,5 cm du bas
         $this->SetY(-15);
-        // Police Arial italique 8
+// Police Arial italique 8
         $this->SetFont('Arial', 'I', 8);
-        // date du jour
+// date du jour
         $d = date("d/m/Y h:m:s");
-        // Num�ro de page
+// Num�ro de page
         $this->Cell(0, 10, $this->titre . ' - Page ' . $this->PageNo() . '/{nb} - ' . $d . $s . $this->nbPhotoPage . " photos de " . number_format($this->largeurPhoto, 2, ',', ' ') . " x " . number_format($this->hauteurPhoto, 2, ',', ' '), 0, 0, 'C');
     }
 
     public function setImage($x, $y, $chemin) {
         if ($this->utiliseEchelleVerticale) {
+
             $this->Image($chemin, $x, $y, 0, $this->hauteurPhoto);
         } else {
             $this->Image($chemin, $x, $y, $this->largeurPhoto);

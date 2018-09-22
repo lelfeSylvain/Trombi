@@ -36,7 +36,22 @@ if ('liberer' === $num) {// on veut libérér la photo de l'élève choisi
         // on affecte le fichier 0 (par défaut) à cet élève
         $pdo->libererImageEleve($numEleveATraiter);
     }
-}elseif ('charger' === $num) {// TODO recopier adapter le code de index
+}elseif ('supprimertout' === $num) { // supprimer la photo et le nom de l'élève dans la BD
+    $ficheEleve = $pdo->getEleve($numEleveATraiter); // on récupère les informations de l'élève
+    if (0 != $ficheEleve['numfichier']) { // s'il existe un fichier (autre que celui par défaut, le fichier 0)
+        $leFich = $pdo->getFichier($ficheEleve['numfichier']); // on récupère les infos du fichier lui-même
+        if (null != $leFich) {// si on les obtient (erreur ?)
+            // on efface le fichier du disque
+            $message = unlink($DOSSIERUPLOAD . $leFich['nomrepertoire'] . '/' . dec2hex($leFich['numfichier']) . $leFich['suffixe']) . EOL;
+            // on efface de la BD
+            $pdo->deleteFichier($leFich['numfichier']) . EOL;
+        } else
+            $message = 'pas de suppression ' . EOL;
+        
+    }// on efface cet élève
+        $pdo->deleteEleve($numEleveATraiter);
+}
+    elseif ('charger' === $num) {// TODO recopier adapter le code de index
 } elseif ('exporter' === $num) {// exporter les fichiers avec le nom du fichier sous la forme classe nom prénom.jpg
     // le tout dans un fichier ZIP
     $nt = $_SESSION['nt'];

@@ -1,20 +1,19 @@
-Créer un <?php echo $libnum; ?></div>
+Créer un <?php echo $libnum; ?> </nav>
+<br><br>
+<div class="row">
+    <div class="offset-2 col-sm-8 bg-dark">
+        <form method="post" action="index.php?uc=creer&num=<?php echo $num; ?>" class="">
 
-</header>
-<?php include('vues/v_ariane.php');?>
-<?php include('vues/v_listClasseur.php');?>
-<form method="post" action="index.php?uc=creer&num=<?php echo $num; ?>" class="formulaire">
+            <div class='form-group'>
+                <label  for="nom">nom du nouveau <?php echo $libnum; ?> :</label>
+                <input type="text" name="nom" value="" id="nom" class="form-control form-control-sm">
+                <input type="hidden" name="nc" value="<?php echo $numClasseurChoisi; ?>">
+                <input type="submit" value="Créer le <?php echo $libnum; ?>"  class="btn btn-primary">
+            </div>
 
-    <div class='formulaireLigneChamp'>
-        <p class="palibel2">nom du nouveau <?php echo $libnum; ?> :</p>
-        <input type="text" name="nom" value="">
+        </form>
     </div>
-    <div class='formulaireLigneChamp'>
-         <input type="text" name="nc" value="<?php echo $numClasseurChoisi; ?>">
-        <input type="submit" value="Créer le <?php echo $libnum; ?>"  class="boutonConnexion">
-    </div>
-
-</form>
+</div>
 <?php
 
 

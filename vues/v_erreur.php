@@ -1,5 +1,4 @@
 Erreur 404
-</div>
-</header>
+</nav>
 Apparemment vous vous êtes trompé de chemin.
 
