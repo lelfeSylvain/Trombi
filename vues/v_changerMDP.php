@@ -1,4 +1,3 @@
-Changer votre mot de passe </nav>
 <?php
 if (!empty($texteNav)) echo $texteNav;
 ?>

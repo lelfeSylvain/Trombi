@@ -36,4 +36,5 @@ if ('Mono1' === $num) {
         $nb++;
     }
 }
-include('vues/v_upload.php');
+$vueChoisie='v_upload';
+$titre="Upload";

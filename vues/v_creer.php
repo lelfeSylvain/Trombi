@@ -1,8 +1,6 @@
-Créer un <?php echo $libnum; ?> </nav>
-<br><br>
 <div class="row">
-    <div class="offset-2 col-sm-8 bg-dark">
-        <form method="post" action="index.php?uc=creer&num=<?php echo $num; ?>" class="">
+    <div class="col-sm-8 bg-light">
+        <form method="post" action="index.php?uc=creer&num=<?php echo $num; ?>&e=1" class="">
 
             <div class='form-group'>
                 <label  for="nom">nom du nouveau <?php echo $libnum; ?> :</label>

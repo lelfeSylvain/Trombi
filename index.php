@@ -1,11 +1,10 @@
-<!DOCTYPE html>
 <?php
 /* Projet Trombi V1 
   sylvain 25 juillet 2016
  */
+
 $PATH = '';
 require_once $PATH . 'inc/fonctions.php'; //appelle tous les 'include' et fonctions utilitaires
-
 
 /*
  * examinons les paramètres get 
@@ -31,14 +30,10 @@ elseif (!Session::isLogged()) {
 } else {// à partir d'ici, l'utilisateur est forcément connecté
     // justement on enregistre la dernière activité de l'utilisateur dans la BD
     $pdo->setDerniereCx($_SESSION['numUtil']);
-//echo $uc.EOL;
-    // gère le fil d'ariane : TODO à gérer
-    //include_once 'controleurs/c_ariane.php';
     //aiguillage principal
-    //echo '########'.$uc;
+    $vueChoisie = "";
     include('controleurs/c_accueil.php');
-    include('vues/v_ariane.php');
-
+    //echo $uc;
     switch ($uc) {
         case 'action': {// uc gestion des images du trombi
                 include("controleurs/c_action.php");
@@ -56,7 +51,7 @@ elseif (!Session::isLogged()) {
                 include("controleurs/c_copier.php");
                 break;
             }
-            case 'creer': {// uc création classeur/trombi
+        case 'creer': {// uc création classeur/trombi
                 include("controleurs/c_creer.php");
                 break;
             }
@@ -66,7 +61,7 @@ elseif (!Session::isLogged()) {
             }
 
         case 'genererpdf': {// uc generer trombi
-                include("controleurs/v_genererpdf.php");
+                include("vues/v_genererpdf.php");
                 break;
             }
 
@@ -80,14 +75,15 @@ elseif (!Session::isLogged()) {
             }
         case 'defaut' :;
         default :  // par défaut 
-            include("vues/v_accueil.php");
+            include('controleurs/c_accueil.php');
     }
 }
 
+include('controleurs/c_navigation.php');
+include('vues/v_principal.php');
 /*
  * une visite a lieu, mémorisons-la
  */
 //include('controleurs/c_visite.php');
-include('controleurs/c_navigation.php');
 
 

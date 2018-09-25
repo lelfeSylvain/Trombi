@@ -5,7 +5,6 @@ require_once $PATH . 'inc/class.Session.php';
 Session::init();
 require_once $PATH . 'inc/class.PDOTrombi.php';
 $_GLOBAL['titre'] = "Trombi";
-include 'vues/v_entete.php';
 // constantes 
 define("EOL", "<br />\n"); // fin de ligne html et saut de ligne
 define("EL", "\n"); //  saut de ligne 
@@ -27,6 +26,21 @@ if (empty($_SESSION['etape'])) $_SESSION['etape']=0;
 // instanciation de la fabrique de vue
 //$vue = FabriqueVue::getFabrique();
 //print_r ($_REQUEST);
+
+function memoriserClasseurTrombi($nc,$num,$pdo){
+    if ("choixtrombi" === $num) {
+        $_SESSION['nt'] = $nc;
+        $_SESSION['nc'] = $pdo->getNumClasseur($nc);
+        $_SESSION['nomtrombi'] = $pdo->getNomTrombi($nc);
+        $_SESSION['nomclasseur'] = $pdo->getNomClasseur($_SESSION['nc']);
+    } elseif ("choixclasseur" === $num) {
+        $_SESSION['nc'] = $nc;
+        $_SESSION['nomclasseur'] = $pdo->getNomClasseur($_SESSION['nc']);
+        $_SESSION['nt'] = "inconnu";
+        $_SESSION['nomtrombi'] = "inconnu";
+    }
+}
+
 
 function clean($texte) {
     return (htmlspecialchars(trim($texte)));

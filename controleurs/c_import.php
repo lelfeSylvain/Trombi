@@ -97,4 +97,5 @@ if ('1' === $num) {
   }
   }
   } */
-include('vues/v_import.php');
+$vueChoisie='v_import'  ;
+$titre='Importer le fichier CSV des personnes';

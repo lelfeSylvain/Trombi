@@ -51,7 +51,7 @@ if ('liberer' === $num) {// on veut libérér la photo de l'élève choisi
     }// on efface cet élève
         $pdo->deleteEleve($numEleveATraiter);
 }
-    elseif ('charger' === $num) {// TODO recopier adapter le code de index
+    elseif ('modifierNom' === $num) {// TODO modifier le nom d'une personne en AJAX ???
 } elseif ('exporter' === $num) {// exporter les fichiers avec le nom du fichier sous la forme classe nom prénom.jpg
     // le tout dans un fichier ZIP
     $nt = $_SESSION['nt'];
@@ -76,7 +76,5 @@ if ('liberer' === $num) {// on veut libérér la photo de l'élève choisi
     } else
         $message = " #### problèmes lors du zippage" . EOL;
 }
-
-
-$lesEleves = $pdo->getLesEleves($_SESSION['nt']);
-include('vues/v_trombi.php');
+// on demande d'afficher le résultat
+include('controleurs/c_afficher.php');

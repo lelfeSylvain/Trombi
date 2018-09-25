@@ -1,4 +1,5 @@
 <?php
 
 $lesEleves = $pdo->getLesElevesOption($_SESSION['nt']);
-include 'vues/v_trombi.php';
+$vueChoisie='v_trombi';
+$titre="Afficher le trombi ".$_SESSION['nomclasseur'].' - '.$_SESSION['nomtrombi'];

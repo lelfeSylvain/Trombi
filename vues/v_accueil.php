@@ -1,8 +1,3 @@
-Choix du classeur
-
-</nav>
-
-
 <?php  
 if (!empty($_SESSION['nt']) && "inconnu" != $_SESSION['nt']) { ?>
 

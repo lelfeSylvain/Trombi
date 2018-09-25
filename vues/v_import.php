@@ -1,8 +1,6 @@
 <?php
 /* importer un fichier CSV d'élèves */
 ?>
-Importer</nav>
-<br><br>
 <script>
     function updateSize() {
         var nBytes = 0,

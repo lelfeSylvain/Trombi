@@ -13,9 +13,10 @@ $options = array(
 // début du traitement
 if ('0' === $num) {// gestion de l'affichage du formulaire
     $lesTrombis = $pdo->getLesTrombis($_SESSION['numUtil']);
-    include 'vues/v_copier.php';
+    $vueChoisie='v_copier';
+    $titre="Copier un trombinoscope";
 } elseif ('1' === $num) {
-    var_dump($_POST);
+    //var_dump($_POST);
     $numtrombichoisi = filter_input(INPUT_POST, 'numtrombichoisi', FILTER_VALIDATE_INT, $options);
     if ($pdo->copyClasse($numtrombichoisi, $_SESSION['nt'])) {
         if ($pdo->copyEleve($numtrombichoisi, $_SESSION['nt'])) {
@@ -29,6 +30,7 @@ if ('0' === $num) {// gestion de l'affichage du formulaire
 
 echo $message;
 //$lesClasseurs = $pdo->getLesTrombis($_SESSION['numUtil']);
-} else
-    include('vues/v_erreur.php');
-
+} else{
+    $vueChoisie='v_erreur';
+    $titre="Erreur 404";
+}

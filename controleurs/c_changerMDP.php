@@ -28,4 +28,5 @@ if ($num === 'check') {// on récupère les données saisies
     }
 }
 
-include('vues/v_changerMDP.php');
+$vueChoisie='v_changerMDP';
+$titre="Changer votre mot de passe";

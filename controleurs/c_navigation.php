@@ -8,5 +8,3 @@ if (Session::isLogged()) {
 } else {// non loggé : on propose de se connecter
     $texteNav = "<a href='index.php?uc=login&num=in'>Connexion</a> \n ";
 }
-/* ********** fin navigation en pied de page ******* */
-include("vues/v_pied.php");
