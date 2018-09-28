@@ -2,10 +2,15 @@
 
 if ("choix" === substr($num, 0, 5)) {
     $nc = filter_input(INPUT_GET, 'nc', FILTER_SANITIZE_STRING);
-    memoriserClasseurTrombi($nc,$num,$pdo);
+    memoriserClasseurTrombi($nc, $num, $pdo);
 }
+// initialisation de l'arbre des trombis
+ $lesClasseurs = $pdo->getLesTrombis($_SESSION['numUtil']);
 
-$lesClasseurs = $pdo->getLesTrombis($_SESSION['numUtil']);
-$vueChoisie='v_accueil';
-$titre="Accueil";
-
+if (!empty($_SESSION['nt']) && "inconnu" != $_SESSION['nt']) {
+    include 'controleurs/c_afficher.php';
+} else {
+   
+    $vueChoisie = 'v_accueil';
+    $titre = "Accueil";
+}

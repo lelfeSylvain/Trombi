@@ -40,4 +40,10 @@ function encodeMDPenMD5() {
         document.getElementById("fileSize").innerHTML = sOutput;
     }
     
-    
+    /* ouvre une nouvelle fenêtre/onglet */
+    function ouvrirPopup(maPage)
+            {
+                maPopup = window.open(maPage);
+                maPopup.focus();
+                //maPopup.onbeforeunload = function(){fermeturePopup();};
+            }

@@ -44,7 +44,7 @@ foreach ($lesEleves as $unEleve) {
 
 
             <div class='col-xs-1 col-sm-2'>
-                <a href="index.php?uc=action&num=supprimertout&e=<?php echo $unEleve['numeleve']; ?>" class='text-danger' title='supprimer la personne et la photo' ><i class="fas fa-trash-alt"></i></a>
+                <a href="index.php?uc=action&num=supprimertout&e=<?php echo $unEleve['numeleve']; ?>" id="suppr<?php echo $unEleve['numeleve']; ?>" class='text-danger' title='supprimer complètement <?php echo ($unEleve['prenom'].' '.$unEleve['nomeleve']) ;?>'  ><i class="fas fa-trash-alt"></i></a>
             </div>
             <div class='col-sm-12'>
                 <a href="index.php?uc=upload&num=Mono0&e=<?php echo $unEleve['numeleve']; ?>">
@@ -62,8 +62,9 @@ foreach ($lesEleves as $unEleve) {
                     echo "<br /><i>" . strtoupper(couperNom($unEleve['valeur'])) . "</i>";
                 }
                 ?>
-                <a href="index.php?uc=action&num=modifierNom&e=<?php echo $unEleve['numeleve']; ?>" class='text-secondary disabled' title='modifier le nom la personne et la photo' ><span class="fa fa-edit"></span></a>
-                    <?php
+                
+                <a href="index.php?uc=action&num=modifierNom&e=<?php echo $unEleve['numeleve']; ?>" role='button' class='text-secondary disabled ' aria-disabled="true" title='modifier le nom la personne et la photo' ><span class="fa fa-edit"></span></a>
+                   <?php
                     $i++;
                     $nb++;
                     if ($nbPhoto <= $i) {

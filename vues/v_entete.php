@@ -6,8 +6,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- feuille de style perso -->
         <link rel="stylesheet" href="css/styles.css" media="all"> 
- <!--       <link rel="stylesheet" href="css/smallscreen.css" media="screen and (max-width: 800px)">
-        <link rel="stylesheet" href="css/largescreen.css" media="screen and (min-width: 800px)">
   
         <!-- Bootstrap core CSS -->
         <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">

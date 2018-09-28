@@ -1,8 +1,9 @@
 
 
 <!-- Sidebar -->
-<div id="" class='navbar bg-light small sidebar'  >
-
+<div id="" class='navbar bg-light small sidebar audessus'  >
+    <?php if (Session::isLogged()) {
+            ?>
     <p class='navbar-text navbar'>
         Utilisateur : <?php echo $_SESSION['pseudo']; ?>
         <br/> classeur :
@@ -18,15 +19,17 @@
             ?>
         </ul>
     </div>
-    <footer  class="bg-light">
-        <nav class=' '>
+    <?php } ?>
+    <footer  class="bg-light  enbas">
+        
             <ul class='list-inline navbar-text  '>
                 <li class='list-inline-item'><?php echo $_GLOBAL['titre']; ?></li>
                 <li class='list-inline-item'><?php echo "v1.0.0 alpha"; ?></li>
-                <li class='list-inline-item'><?php echo "<a href='http://etablissementbertrandeborn.net/'>Site de BdeB</a>"; ?></li>
                 <li class='list-inline-item'><?php echo "<img src='https://licensebuttons.net/l/by-nc-sa/3.0/80x15.png' alt='cc-by-nc-sa' />"; ?></li>
+                <li class='list-inline-item'><?php echo "<a href='http://etablissementbertrandeborn.net/'>Site de BdeB</a>"; ?></li>
+                
             </ul>
-        </nav> 
+        
     </footer>
 </div>
 

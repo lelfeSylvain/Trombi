@@ -1,4 +1,5 @@
 <?php
+
 /* Projet Trombi V1 
   sylvain 25 juillet 2016
  */
@@ -9,12 +10,12 @@ require_once $PATH . 'inc/fonctions.php'; //appelle tous les 'include' et foncti
 /*
  * examinons les paramètres get 
  */
-if (!isset($_REQUEST['uc'])) {//s'il n'y a pas d'uc alors on initie le comportement par défaut
+if (!isset($_GET['uc'])) {//s'il n'y a pas d'uc alors on initie le comportement par défaut
     $uc = 'defaut';
     $num = 'actuelle';
 } else { // s'il y a un uc, on l'utilise après l'avoir nettoyé
     $uc = filter_input(INPUT_GET, 'uc', FILTER_SANITIZE_STRING);
-    if (isset($_REQUEST['num'])) {
+    if (isset($_GET['num'])) {
         $num = filter_input(INPUT_GET, 'num', FILTER_SANITIZE_STRING);
     } else {// pas de num -> valeur par défaut
         $num = "actuelle";
@@ -26,7 +27,8 @@ if ($uc === 'login') {
 // si l'utilisateur n'est pas identifié, il doit le faire
 elseif (!Session::isLogged()) {
     $texteNav = "";
-    include('vues/v_login.php');
+    $vueChoisie = 'v_login';
+    $titre = "Connectez-vous";
 } else {// à partir d'ici, l'utilisateur est forcément connecté
     // justement on enregistre la dernière activité de l'utilisateur dans la BD
     $pdo->setDerniereCx($_SESSION['numUtil']);

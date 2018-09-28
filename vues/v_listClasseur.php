@@ -76,6 +76,7 @@ foreach ($lesClasseurs as $unTrombi) {// tant qu'on trouve des classeurs dans le
                 // si oui est-ce qu'il existe un trombi sélectionné ? 
                 if ($_SESSION['nt'] === "inconnu") {// si non, c'est celui-ci
                     memoriserClasseurTrombi($unTrombi['numt'],"choixtrombi", $pdo);
+                    include ('controleurs/c_afficher.php'); // petite entorse au MVC pour charger en mémoire le trombi choisi          
                 }                
             }
             echo getFeuille($unTrombi['numt'], $unTrombi['nomt']);

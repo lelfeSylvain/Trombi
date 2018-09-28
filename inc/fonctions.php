@@ -1,5 +1,4 @@
 <?php
-
 // initialisations du projet
 require_once $PATH . 'inc/class.Session.php';
 Session::init();
@@ -15,10 +14,12 @@ $tabMois = array("janvier", "février", "mars", "avril", "mai", "juin", "juillet
 $_SESSION['debug'] = "hidden";
 // dossier des uploads
 $DOSSIERUPLOAD = 'upload/';
-$IMAGEINCONNUE=$DOSSIERUPLOAD .'00000000/00000000.jpg';//$this->path.'/inconnu.jpg'
+$IMAGEINCONNUE = $DOSSIERUPLOAD . '00000000/00000000.jpg'; //$this->path.'/inconnu.jpg'
 // augmenter le nombre de fichiers télécharger max
 ini_set('max_file_uploads', 300); // 300 à optimiser si besoin
-if (empty($_SESSION['etape'])) $_SESSION['etape']=0;
+if (empty($_SESSION['etape']))
+    $_SESSION['etape'] = 0;
+
 //
 //
 // TODO effacer le mode debug
@@ -27,7 +28,7 @@ if (empty($_SESSION['etape'])) $_SESSION['etape']=0;
 //$vue = FabriqueVue::getFabrique();
 //print_r ($_REQUEST);
 
-function memoriserClasseurTrombi($nc,$num,$pdo){
+function memoriserClasseurTrombi($nc, $num, $pdo) {
     if ("choixtrombi" === $num) {
         $_SESSION['nt'] = $nc;
         $_SESSION['nc'] = $pdo->getNumClasseur($nc);
@@ -41,6 +42,26 @@ function memoriserClasseurTrombi($nc,$num,$pdo){
     }
 }
 
+function afficheMessages($texteNav) {
+    if (!empty($texteNav)) {
+        ?>
+        <div class="modal col-md-12 col-xs-12" id="infos">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">x</button>
+                        <h4 class="modal-title">Informations</h4>
+                    </div>
+                    <div class="modal-body"><?php
+                        echo $texteNav;
+                        ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+}
 
 function clean($texte) {
     return (htmlspecialchars(trim($texte)));
@@ -60,6 +81,10 @@ function logout() {
     $_SESSION['debug'] = "hidden";
     unset($_SESSION['tsDerniereCx']);
     unset($_SESSION['numUtil']);
+    unset($_SESSION['nc']);
+    unset($_SESSION['nt']);
+    unset($_SESSION['nomclasseur']);
+    unset($_SESSION['nomtrombi']);
     header('Location: index.php?uc=lecture&num=actuelle');
 }
 
@@ -211,7 +236,7 @@ function couperNom($nom) {
         for ($i = 1; $i < $nb; $i++) {
             if (strlen($retour[$j] . " " . $pieces[$i]) > $l) {
                 $j++;
-                 $retour[$j] = $pieces[$i];
+                $retour[$j] = $pieces[$i];
             } else {
                 $retour[$j] .= " " . $pieces[$i];
             }

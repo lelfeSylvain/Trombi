@@ -43,7 +43,7 @@ if ('0' === $etape) { //affichage du formulaire
             <?php
         } else {
             // affichage du résultat des traitements
-            if (!empty($message)) echo $message . EOL;
+            afficherMessages($message);
         }
         ?>
     </div>
