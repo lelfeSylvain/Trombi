@@ -32,7 +32,7 @@ foreach ($lesEleves as $unEleve) {
     } else
         
         ?>
-    <div class='col-xs-4 col-sm-3 col-md-2 col-lg-1'>
+    <div class='col-xs-5 col-sm-3 col-md-2 col-lg-1'>
         <div class='row small'>
             <div class='col-xs-1 col-sm-2'>
                 <a href="index.php?uc=action&num=liberer&e=<?php echo $unEleve['numeleve']; ?>" title='libérer la photo' class='text-secondary'><span class="fas fa-unlink"></span></a>
@@ -46,7 +46,7 @@ foreach ($lesEleves as $unEleve) {
             <div class='col-xs-1 col-sm-2'>
                 <a href="index.php?uc=action&num=supprimertout&e=<?php echo $unEleve['numeleve']; ?>" id="suppr<?php echo $unEleve['numeleve']; ?>" class='text-danger' title='supprimer complètement <?php echo ($unEleve['prenom'].' '.$unEleve['nomeleve']) ;?>'  ><i class="fas fa-trash-alt"></i></a>
             </div>
-            <div class='col-sm-12'>
+            <div class='col-xs-12'>
                 <a href="index.php?uc=upload&num=Mono0&e=<?php echo $unEleve['numeleve']; ?>">
                     <img class='img-fluid' title="<?php echo $unEleve['numeleve'] . ' : ' . $unEleve['numfichier'] . ' - ' . dec2hex($unEleve['numfichier']); ?>" src="<?php if (empty($unEleve['path'])) {
         $cheminImage = $IMAGEINCONNUE;

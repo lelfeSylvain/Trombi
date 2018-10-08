@@ -1,6 +1,4 @@
-<?php
-afficheMessages($texteNav);
-?>
+
 <form method="post" action="index.php?uc=login&num=in" name='identification' class="form-horizontal col-md-12 col-xs-12 jumbotron ">
     <fieldset>
         <div class="form-group">

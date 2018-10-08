@@ -12,7 +12,7 @@ include_once $PATH . 'inc/class.MakeLog.php';
 class PDOTrombi {
 
     // paramètres d'accès au SGBD
-    private static $serveur = 'mysql:host=localhost';
+    private static $serveur = 'mysql:host=localhost:3307/run/mysqld/mysqld10.sock';
     private static $bdd = 'dbname=trombi';
     private static $user = 'trombi';
     private static $mdp = 'trombi';

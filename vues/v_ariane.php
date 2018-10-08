@@ -1,10 +1,10 @@
 
 
 <!-- Sidebar -->
-<div id="" class='navbar bg-light small sidebar audessus'  >
+<div id="" class='navbar bg-light small sidebar audessus pr-0'  >
     <?php if (Session::isLogged()) {
             ?>
-    <p class='navbar-text navbar'>
+    <p class='navbar-text navbar col-12'>
         Utilisateur : <?php echo $_SESSION['pseudo']; ?>
         <br/> classeur :
         <?php
@@ -13,14 +13,14 @@
         ?>
     </p>
     <div   id="tree">
-        <ul   class="">            
+        <ul   class=" col-12">            
             <?php
             include('vues/v_listClasseur.php');
             ?>
         </ul>
     </div>
     <?php } ?>
-    <footer  class="bg-light  enbas">
+    <footer  class="bg-light  enbas col-xs-4 ">
         
             <ul class='list-inline navbar-text  '>
                 <li class='list-inline-item'><?php echo $_GLOBAL['titre']; ?></li>

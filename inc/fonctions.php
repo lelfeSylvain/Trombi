@@ -42,23 +42,17 @@ function memoriserClasseurTrombi($nc, $num, $pdo) {
     }
 }
 
-function afficheMessages($texteNav) {
+function afficheMessages($texteNav,$titre='') {
     if (!empty($texteNav)) {
-        ?>
-        <div class="modal col-md-12 col-xs-12" id="infos">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">x</button>
-                        <h4 class="modal-title">Informations</h4>
-                    </div>
-                    <div class="modal-body"><?php
-                        echo $texteNav;
-                        ?>
-                    </div>
-                </div>
-            </div>
+        ?><div class="container" id="infos">
+            <div class="alert alert-info " >
+                <button type="button" class="close">&times;</button>
+                <h4><?php echo $titre;?></h4> <?php
+                echo $texteNav;
+                ?>
+            </div>  
         </div>
+
         <?php
     }
 }
